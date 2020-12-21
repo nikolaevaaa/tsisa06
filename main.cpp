@@ -5,33 +5,38 @@
 #include <algorithm>
 
 struct Graph {
+public:
     int num;
-    std::map<Graph, int> input;
-    std::map<Graph, int> output;
+    std::map<Graph, int> start;
+    std::map<Graph, int> finish;
 
-    explicit Graph(const int &n) : num(n) {}
-    bool numb(const Graph &n) {
-        for (const auto &i: output) {
-            if (i.first.num == n.num) return true;
-        }
-        return false;
-    }
-    int getw(const Graph &n) {
-        for (const auto &i : output) {
-            if (i.first.num == n.num) return i.second;
-        }
-        return 0;
-    }
-    friend bool operator<(const Graph &left, const Graph &right) {
-        return left.num < right.num;
-    }
+    Graph(const int& n) : num(n) {}
+    bool numb(const Graph& n) ;
+    int getw(const Graph& n) ;
+    friend bool operator<(const Graph& lhs, const Graph& rhs)
+     {
+         return lhs.num < rhs.num;
+     }
 
 };
+int Graph::getw(const Graph& n)
+{
+for (const auto &i : finish) {
+if (i.first.num == n.num) return i.second;
+}
+return 0;
+}
 
+bool Graph::numb(const Graph &n) {
+    for (const auto &i: finish) {
+        if (i.first.num == n.num) return true;
+    }
+    return false;
+}
 
-void Pair(Graph &left, Graph &right, int w) {
-    left.output.insert(std::make_pair(right, w));
-    right.input.insert(std::make_pair(left, w));
+void make_gr(Graph &lhs, Graph &rhs, int w) {
+    lhs.finish.insert(std::make_pair(rhs, w));
+    rhs.start.insert(std::make_pair(lhs, w));
 }
 
 void print (const std::vector<std::vector<int>> &matrix) {
@@ -90,17 +95,17 @@ int main()
     Graph n6(6);
     Graph n7(7);
     Graph n8(8);
-    Pair(n1, n2, a);
-    Pair(n1, n3, e);
-    Pair(n2, n4, b);
-    Pair(n3, n4, f);
-    Pair(n1, n5, i);
-    Pair(n5, n6, j);
-    Pair(n4, n6, g);
-    Pair(n6, n7, h);
-    Pair(n4, n7, c);
-    Pair(n6, n8, k);
-    Pair(n7, n8, d);
+    make_gr(n1, n2, a);
+    make_gr(n2, n3, e);
+    make_gr(n2, n4, b);
+    make_gr(n3, n4, f);
+    make_gr(n1, n5, i);
+    make_gr(n5, n6, j);
+    make_gr(n4, n6, g);
+    make_gr(n6, n7, h);
+    make_gr(n4, n7, c);
+    make_gr(n6, n8, k);
+    make_gr(n7, n8, d);
     std::vector<Graph> gr = {n1, n2, n3, n4, n5, n6, n7};
     int l = FloydAlgorithm(gr);
     std::cout << "Critical path length = " << l << std::endl;
